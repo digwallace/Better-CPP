@@ -3,44 +3,46 @@
 #include<iostream>
 #include<memory>    // C++11 header for smart pointer method.
 
-class DummyClass{};
+class Dummy{};
 
-class ConstructorAllocatingClass{
+class ModernMethod
+{
     public:
-        ConstructorAllocatingClass(DummyClass copy); 
+        ModernMethod(Dummy copy); 
     private:
         // Incorrect vs. Correct manner of handling.
-        DummyClass incorrect;
-        std::unique_ptr<DummyClass> correct;
+        Dummy incorrect;
+        std::unique_ptr<Dummy> correct;
 };
 
-ConstructorAllocatingClass::ConstructorAllocatingClass(DummyClass copy){
-        incorrect = copy;                   // Leaks memory if object fails.
-        correct   = std::unique_ptr<DummyClass>(new DummyClass(copy));   // Deletes object when out of scope.
+ModernMethod::ModernMethod(Dummy copy){
+        incorrect = copy;   // Leaks memory if object fails.
+        correct   = std::unique_ptr<Dummy>(new Dummy(copy));   
 }
 
 // Pre-C++11 Method using a Try-Catch.
-class OldMethodClass{
+class OldMethod
+{
     public:
-        OldMethodClass(DummyClass copy);
+        OldMethod(Dummy copy);
     private:
-        DummyClass  old_method_object;
+        Dummy  old_dummy;
 };
 
-OldMethodClass::OldMethodClass(DummyClass copy){
-    old_method_object = copy;
-    if(&old_method_object != &copy){
+OldMethod::OldMethod(Dummy copy){
+    old_dummy = copy;
+    if(&old_dummy != &copy){
         throw "Failed to copy!\n";
     }
 }
 
 int main(){
 
-    DummyClass                  class_to_copy;
-    ConstructorAllocatingClass  example(class_to_copy);
+    Dummy           class_to_copy;
+    ModernMethod    modern_example(class_to_copy);
 
     try{
-        OldMethodClass              old_example(class_to_copy);    
+        OldMethod               old_example(class_to_copy);    
     }catch(const char* msg){
         std::cout << msg;
     }
